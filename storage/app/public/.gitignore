@@ -1,4 +1,0 @@
-# Abaikan semua di public/storage
-/public/storage/*
-# Kecuali file .gitkeep
-!/public/storage/.gitkeep
