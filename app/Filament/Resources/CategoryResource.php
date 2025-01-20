@@ -26,12 +26,8 @@ class CategoryResource extends Resource
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
-                    Forms\Components\FileUpload::make('image')
-                    ->image()
-                    ->required()  // Menandakan bahwa upload gambar wajib
-                    ->maxSize(5024)  // Maksimum ukuran file (dalam KB)
-                    ->acceptedFileTypes(['image/jpeg', 'image/png'])  // Hanya menerima jenis file gambar
-                
+                Forms\Components\FileUpload::make('image')
+                    ->image(),
             ]);
     }
 

@@ -11,9 +11,7 @@ class Product extends Model
 
     protected $fillable = [
         'seller_id',
-        'category_
-        
-        id',
+        'category_id',
         'name',
         'description',
         'price',
@@ -23,7 +21,8 @@ class Product extends Model
 
     public function seller()
     {
-        return $this->belongsTo(User::class, 'seller_id');
+        return $this->belongsTo(User::class, 'seller_id')
+                    ->where('role', 'seller'); // Memastikan hanya user dengan role seller
     }
 
     public function category()

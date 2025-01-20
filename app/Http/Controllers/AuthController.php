@@ -79,10 +79,10 @@ class AuthController extends Controller
         return response()->json([
             'status' => true,
             'message' => 'User registered successfully',
-            'data' => [
-                'user' => $user,
-                'image_url' => $imagePath ? url('storage/' . $imagePath) : null
-            ],
+            // 'data' => [
+            //     'user' => $user,
+            //     'image_url' => $imagePath ? url('storage/' . $imagePath) : null
+            // ],
             'token' => $token
         ], 201);
     }

@@ -5,10 +5,13 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ProductResource\Pages;
 use App\Filament\Resources\ProductResource\RelationManagers;
 use App\Models\Product;
+use App\Models\User;
+use App\Models\Category;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Forms\Components\Select;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -23,12 +26,20 @@ class ProductResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('seller_id')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('category_id')
-                    ->required()
-                    ->numeric(),
+                Select::make('seller_id')
+                    ->label('Seller')
+                    ->options(
+                        User::where('role', 'seller')
+                            ->get()
+                            ->pluck('name', 'id')
+                    )
+                    ->searchable()
+                    ->required(),
+                Select::make('category_id')
+                    ->label('Category')
+                    ->options(Category::all()->pluck('name', 'id'))
+                    ->searchable()
+                    ->required(),
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
@@ -52,12 +63,14 @@ class ProductResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('seller_id')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('category_id')
-                    ->numeric()
-                    ->sortable(),
+                Tables\Columns\TextColumn::make('seller.name')
+                ->label('Seller')
+                ->sortable()
+                ->searchable(),
+                Tables\Columns\TextColumn::make('category.name')
+                    ->label('Category')
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('price')
