@@ -9,6 +9,11 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\CartItemController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\OtpController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\PaymentCallbackController;
+use App\Http\Controllers\MidtransCallbackController;
+
 
 
 /*
@@ -36,6 +41,8 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
 Route::post('/verify-otp', [AuthController::class, 'verifyOtp']);
 Route::post('/reset-password', [AuthController::class, 'resetPassword']);
+Route::post('payment/callback', [PaymentCallbackController::class, 'handle']);
+
 
 
 
@@ -51,7 +58,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/products/search', [ProductController::class, 'search']);
     Route::get('/products/rating', [ProductController::class, 'getProductsByRating']);
 
-
+    Route::get('/user', [UserController::class, 'index']); // Fetch user data
+    Route::put('/user', [UserController::class, 'update']); // Update user data
 
     // Admin  routes
     Route::middleware('check.role:admin')->group(function () {
@@ -93,5 +101,12 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/cart/items/{id}', [CartController::class, 'updateCartItem']); // Mengupdate jumlah item dalam keranjang
         Route::delete('/cart/items/{id}', [CartController::class, 'removeCartItem']); // Menghapus item dari keranjang
 
+        Route::post('/order', [OrderController::class, 'createOrder']);
+        Route::get('/order', [OrderController::class, 'getUserOrders']);
+
+        // Route::post('/midtrans/callback', [OrderController::class, 'handleMidtransCallback']);
+
+        // Route::post('/midtrans/webhook', [PaymentWebhookController::class, 'handleWebhook']);
+        // Route::post('midtrans/callback', [MidtransCallbackController::class, 'handle']);
     });
 });
