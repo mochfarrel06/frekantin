@@ -1,0 +1,5 @@
+---
+deployment:
+tasks:
+- export DEPLOYPATH=/home/frek8627/public_html/frekantin
+- /bin/cp -r * $DEPLOYPATH
