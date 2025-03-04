@@ -45,17 +45,20 @@ class ProductResource extends Resource
                     ->maxLength(255),
                 Forms\Components\Textarea::make('description')
                     ->required()
-                    ->columnSpanFull(),
+                    ->maxLength(255),
                 Forms\Components\TextInput::make('price')
                     ->required()
                     ->numeric()
                     ->prefix('$'),
                 Forms\Components\FileUpload::make('image')
-                    ->image(),
-                Forms\Components\TextInput::make('stock')
-                    ->required()
-                    ->numeric()
-                    ->default(0),
+                    ->image()
+                    ->disk('public') // Gunakan disk 'public'
+                    ->directory('product-images') // Simpan di folder 'category-images'
+                    ->visibility('public'), // Atur visibilitas file menjadi publik
+                // Forms\Components\TextInput::make('stock')
+                //     ->required()
+                //     ->numeric()
+                //     ->default(0),
             ]);
     }
 
@@ -74,12 +77,13 @@ class ProductResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('price')
-                    ->money()
+                    ->label('Harga')
+                    ->formatStateUsing(fn ($state) => 'Rp.' . number_format($state, 0, ',', '.')) // Format ke IDR
                     ->sortable(),
                 Tables\Columns\ImageColumn::make('image'),
-                Tables\Columns\TextColumn::make('stock')
-                    ->numeric()
-                    ->sortable(),
+                    // Tables\Columns\TextColumn::make('stock')
+                    //     ->numeric()
+                    //     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

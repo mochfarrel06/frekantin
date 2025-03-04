@@ -105,33 +105,62 @@ class AuthController extends Controller
         return $this->loginUser($request, 'admin');
     }
 
-    // Fungsi login umum
     private function loginUser(Request $request, $role)
     {
         $validator = Validator::make($request->all(), [
             'email' => 'required|email',
-            'password' => 'required'
+            'password' => 'required',
+            'fcm_token' => 'sometimes|string'
         ]);
-
+    
         if ($validator->fails()) {
             return response()->json(['status' => false, 'message' => 'Validation error', 'errors' => $validator->errors()], 422);
         }
-
-        // Cek kredensial dan peran pengguna
+    
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password, 'role' => $role])) {
             $user = Auth::user();
             $token = $user->createToken('authToken')->plainTextToken;
-
+    
+            // Simpan FCM Token jika dikirim dari frontend
+            if ($request->has('fcm_token')) {
+                $user->update(['fcm_token' => $request->fcm_token]);
+            }
+    
             return response()->json([
                 'status' => true,
-                'message' => ucfirst($role) . ' login Berhasil',
+                'message' => ucfirst($role) . ' login berhasil',
                 'token' => $token,
                 'user' => $user
             ]);
         }
-
+    
         return response()->json(['status' => false, 'message' => 'Invalid credentials or role'], 401);
     }
+
+    public function updateFcmToken(Request $request)
+{
+    $validator = Validator::make($request->all(), [
+        'fcm_token' => 'required|string',
+    ]);
+
+    if ($validator->fails()) {
+        return response()->json([
+            'status' => false,
+            'message' => 'Validation error',
+            'errors' => $validator->errors()
+        ], 422);
+    }
+
+    $user = Auth::user();
+    $user->update(['fcm_token' => $request->fcm_token]);
+
+    return response()->json([
+        'status' => true,
+        'message' => 'FCM Token updated successfully'
+    ], 200);
+}
+
+    
 
     public function update(Request $request)
     {

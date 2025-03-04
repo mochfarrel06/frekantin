@@ -10,6 +10,7 @@ class Review extends Model
     use HasFactory;
 
     protected $fillable = [
+        'order_item_id', // Ganti order_id menjadi order_item_id
         'product_id',
         'customer_id',
         'rating',
@@ -28,5 +29,11 @@ class Review extends Model
     public function customer()
     {
         return $this->belongsTo(User::class, 'customer_id');
+    }
+
+    // Relasi dengan OrderItem
+    public function orderItem()
+    {
+        return $this->belongsTo(OrderItem::class);
     }
 }

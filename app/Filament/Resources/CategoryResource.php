@@ -27,7 +27,10 @@ class CategoryResource extends Resource
                     ->required()
                     ->maxLength(255),
                 Forms\Components\FileUpload::make('image')
-                    ->image(),
+                    ->image()
+                    ->disk('public') // Gunakan disk 'public'
+                    ->directory('category-images') // Simpan di folder 'category-images'
+                    ->visibility('public'), // Atur visibilitas file menjadi publik
             ]);
     }
 

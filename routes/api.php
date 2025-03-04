@@ -11,6 +11,7 @@ use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\OtpController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\PaymentCallbackController;
 use App\Http\Controllers\MidtransCallbackController;
 
@@ -36,6 +37,9 @@ Route::post('/login/seller', [AuthController::class, 'loginSeller']);
 // Admin login
 Route::post('/login/admin', [AuthController::class, 'loginAdmin']);
 
+Route::post('/update-fcm-token', [AuthController::class, 'updateFcmToken']);
+
+
 Route::post('/send-otp', [AuthController::class, 'sendOtp']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
@@ -49,6 +53,7 @@ Route::post('payment/callback', [PaymentCallbackController::class, 'handle']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::put('/update', [AuthController::class, 'update']);
+    
 
     Route::get('/categories', [CategoryController::class, 'index']); // Menampilkan semua kategori
     Route::get('/products', [ProductController::class, 'index']); // Menampilkan semua produk
@@ -60,6 +65,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/user', [UserController::class, 'index']); // Fetch user data
     Route::put('/user', [UserController::class, 'update']); // Update user data
+
+    Route::get('orders/{orderId}/reviews', [ReviewController::class, 'getReviewsByOrderId']);
 
     // Admin  routes
     Route::middleware('check.role:admin')->group(function () {
@@ -80,6 +87,13 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::post('/products', [ProductController::class, 'store']); // Menambahkan produk
             Route::put('/products/{id}', [ProductController::class, 'update']); // Mengupdate produk
             Route::delete('/products/{id}', [ProductController::class, 'destroy']); // Menghapus produk
+
+            Route::get('seller/transactions', [TransactionController::class, 'index']); // List transaksi SUCCESS
+            Route::get('seller/transactions/{id}', [TransactionController::class, 'show']); // Detail transaksi SUCCESS
+            Route::put('seller/transactions/{id}/complete', [TransactionController::class, 'markAsCompleted']); // Ubah status jadi COMPLETED
+            Route::get('transaction-summary', [TransactionController::class, 'getTransactionSummary']);
+            Route::get('/transaction-summary-by-date', [TransactionController::class, 'getTransactionSummaryByDate']);
+
         });
 
     // Customer routes
@@ -87,10 +101,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
         //review
         Route::get('/reviews', [ReviewController::class, 'index']); // Menampilkan semua review
-        Route::post('/reviews', [ReviewController::class, 'store']); // Menambahkan review
-        Route::put('/reviews/{id}', [ReviewController::class, 'update']); // Mengupdate review
-        Route::delete('/reviews/{id}', [ReviewController::class, 'destroy']); // Menghapus review
+        Route::get('/check-review', [ReviewController::class, 'checkReview']);
 
+        Route::post('orders/{orderId}/reviews', [ReviewController::class, 'store']);        
         //cart
         Route::get('/cart', [CartController::class, 'index']); // Melihat keranjang
         Route::get('/cart/total-price', [CartController::class, 'calculateTotalPrice']);
