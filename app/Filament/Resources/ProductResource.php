@@ -55,10 +55,10 @@ class ProductResource extends Resource
                     ->disk('public') // Gunakan disk 'public'
                     ->directory('product-images') // Simpan di folder 'category-images'
                     ->visibility('public'), // Atur visibilitas file menjadi publik
-                // Forms\Components\TextInput::make('stock')
-                //     ->required()
-                //     ->numeric()
-                //     ->default(0),
+                Forms\Components\TextInput::make('stock')
+                    ->required()
+                    ->numeric()
+                    ->default(0),
             ]);
     }
 
@@ -81,9 +81,9 @@ class ProductResource extends Resource
                     ->formatStateUsing(fn ($state) => 'Rp.' . number_format($state, 0, ',', '.')) // Format ke IDR
                     ->sortable(),
                 Tables\Columns\ImageColumn::make('image'),
-                    // Tables\Columns\TextColumn::make('stock')
-                    //     ->numeric()
-                    //     ->sortable(),
+                    Tables\Columns\TextColumn::make('stock')
+                        ->numeric()
+                        ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
